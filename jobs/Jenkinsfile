@@ -1,0 +1,43 @@
+
+  
+import groovy.json.JsonSlurperClassic
+
+def jsonParse(def json) {
+    new groovy.json.JsonSlurperClassic().parseText(json)
+}
+pipeline {
+  agent { label 'master' } //Apartado de agente: Dice al jenkinsfile donde debe ejecutarse
+  environment {
+    appName = "variable"  // Variables de entorno 
+  }
+  stages { //Fases
+
+ stage("paso 1"){ //Fase 1
+     
+      steps { //Escribir o darles las tareas que debe desarrollar
+      //Cada fase se irà resolviendo hasta fallar o hasta terminar
+      // Si falla, el pipeline deja de ejecutar en la fase que fallo y se va al apartado "post"
+          script {			
+           sh "echo 'Bienvenido desde JENKINS - Aldo Allende'"
+        }
+      }
+    }
+  }
+  
+  post { // Siempre se va a ejecutar al finalizar el pipeline
+    //Se va a ejecutar dependiendo del estado de la tarea 
+      always {           // Se va a ejecutar siempre al finalizar la tarea sin importar si falle o que no termine correctamente 
+          deleteDir()
+           sh "echo 'fase always'"
+      }
+      success { // Se va a ejecutar siempre y cuando termine bien la tarea 
+            sh "echo 'fase success'"
+        }
+
+      failure { // Se va a ejecutar solo si la tarea falla
+            sh "echo 'fase failure'"
+      }
+      
+  }
+}  
+
